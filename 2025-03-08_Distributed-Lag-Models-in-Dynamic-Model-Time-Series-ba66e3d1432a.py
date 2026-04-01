@@ -215,7 +215,7 @@ for lag in range(1, max_lags + 1):
         temp_data[f"CPI_lag{l}"] = temp_data["CPI"].shift(l)
     temp_data.dropna(inplace=True)
 X_lags = ["CPI"] + [f"CPI_lag{l}" for l in range(1, lag + 1)]
-    X_matrix = sm.add_constant(temp_data[X_lags])
-    y_vector = temp_data["CPI"]
+X_matrix = sm.add_constant(temp_data[X_lags])
+y_vector = temp_data["CPI"]
 model = sm.OLS(y_vector, X_matrix).fit()
-    aic_values.append(model.aic)
+aic_values.append(model.aic)
