@@ -130,7 +130,7 @@ def set_plot_style(ax, data: pd.DataFrame, time_column, value_columns):
         ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x)}"))
 
 
-def plot_time_series(data: pd.DataFrame, time_column, value_columns, title: str = "Time Series Plot", filename=None):
+def plot_time_series(data: pd.DataFrame, time_column, value_columns, title: str = "Time Series Plot", filename=None, plot: bool = False):
     """
     Plot time series data from a DataFrame.
 
@@ -142,26 +142,27 @@ def plot_time_series(data: pd.DataFrame, time_column, value_columns, title: str 
         filename (str, optional): Filename to save the plot.
     """
     set_visualization_style()
-    fig, ax = plt.subplots(figsize=(10, 5))
-    colors = plt.cm.Greys(np.linspace(0.2, 0.8, len(value_columns)))
+    if plot:
+        fig, ax = plt.subplots(figsize=(10, 5))
+        colors = plt.cm.Greys(np.linspace(0.2, 0.8, len(value_columns)))
 
-    data[time_column] = pd.to_datetime(data[time_column])  # Ensure datetime format
+        data[time_column] = pd.to_datetime(data[time_column])  # Ensure datetime format
 
-    for i, col in enumerate(value_columns):
-        ax.plot(data[time_column], data[col], linewidth=2, color=colors[i])
-        last_x = data[time_column].iloc[-1] + pd.Timedelta(days=10)
-        last_y = data[col].iloc[-1]
-        ax.text(last_x, last_y, col, fontsize=12, color=colors[i],
-                verticalalignment="center")
+        for i, col in enumerate(value_columns):
+            ax.plot(data[time_column], data[col], linewidth=2, color=colors[i])
+            last_x = data[time_column].iloc[-1] + pd.Timedelta(days=10)
+            last_y = data[col].iloc[-1]
+            ax.text(last_x, last_y, col, fontsize=12, color=colors[i],
+                    verticalalignment="center")
 
-    set_plot_style(ax, data, time_column, value_columns)
+        set_plot_style(ax, data, time_column, value_columns)
 
-    if title:
-        ax.set_title(title)
+        if title:
+            ax.set_title(title)
 
-    if filename:
-        plt.savefig(filename, dpi=300, bbox_inches="tight")
-    plt.show()
+        if filename:
+            plt.savefig(filename, dpi=300, bbox_inches="tight")
+        plt.show()
 
 
 def plot_decomposition(data: pd.Series, model: str = "additive",
@@ -177,23 +178,24 @@ def plot_decomposition(data: pd.Series, model: str = "additive",
     set_visualization_style()
     period = max(2, len(data) // 10)
     decomposition = seasonal_decompose(data, model=model, period=period)
-    fig, axes = plt.subplots(4, 1, figsize=(10, 8), sharex=True)
+                       if plot:
+        fig, axes = plt.subplots(4, 1, figsize=(10, 8), sharex=True)
 
-    axes[0].plot(data, label="Original", color='black')
-    axes[0].set_title("Original Series")
+        axes[0].plot(data, label="Original", color='black')
+        axes[0].set_title("Original Series")
 
-    axes[1].plot(decomposition.trend, label="Trend", color='black')
-    axes[1].set_title("Trend")
+        axes[1].plot(decomposition.trend, label="Trend", color='black')
+        axes[1].set_title("Trend")
 
-    axes[2].plot(decomposition.seasonal, label="Seasonal", color='black')
-    axes[2].set_title("Seasonal")
+        axes[2].plot(decomposition.seasonal, label="Seasonal", color='black')
+        axes[2].set_title("Seasonal")
 
-    axes[3].plot(decomposition.resid, label="Residual", color='black')
-    axes[3].set_title("Residual")
+        axes[3].plot(decomposition.resid, label="Residual", color='black')
+        axes[3].set_title("Residual")
 
-    plt.tight_layout()
-    plt.savefig(f"{title.replace(' ', '_')}.png")
-    plt.show()
+        plt.tight_layout()
+        plt.savefig(f"{title.replace(' ', '_')}.png")
+        plt.show()
 
 
 # Visualize CPI data
