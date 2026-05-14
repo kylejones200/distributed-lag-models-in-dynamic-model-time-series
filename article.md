@@ -2,10 +2,10 @@
 variable influence the present. Dynamic models capture these...
 
 ### Distributed Lag Models in Dynamic Model Time Series
-Time series data often exhibit delayed effects, where past values of a variable influence the present. Dynamic models capture these dependencies by incorporating lagged values of explanatory variables. One important class of dynamic models is the **distributed lag model (DLM)**, which explicitly accounts for how past values affect the present over multiple time steps.
+Time series data often exhibit delayed effects, where past values of a variable influence the present. Dynamic models capture these dependencies by incorporating lagged values of explanatory variables. One important class of dynamic models is the distributed lag model (DLM), which explicitly accounts for how past values affect the present over multiple time steps.
 
 ### What Are Distributed Lag Models?
-A **distributed lag model** assumes that the dependent variable at time t depends on the current and past values of one or more independent variables. A simple distributed lag model with one explanatory variable X_t looks like this:
+A distributed lag model assumes that the dependent variable at time t depends on the current and past values of one or more independent variables. A simple distributed lag model with one explanatory variable X_t looks like this:
 
 
 where:
@@ -29,9 +29,9 @@ Let's illustrate a distributed lag model using the consumer price index (CPI) wi
 We need a way to choose the right number of lags for our model. Too few lags may miss important delayed effects, while too many can introduce unnecessary complexity.
 
 #### Methods for Selecting Lags:
-- **Information Criteria (AIC/BIC):** Use Akaike Information Criterion (AIC) or Bayesian Information Criterion (BIC) to compare models with different lag lengths.
-- **Significance of Coefficients:** Drop lags with statistically insignificant coefficients.
-- **Partial Autocorrelation Function (PACF):** Examine PACF to determine the number of significant lags.
+- Information Criteria (AIC/BIC): Use Akaike Information Criterion (AIC) or Bayesian Information Criterion (BIC) to compare models with different lag lengths.
+- Significance of Coefficients: Drop lags with statistically insignificant coefficients.
+- Partial Autocorrelation Function (PACF): Examine PACF to determine the number of significant lags.
 
 Using AIC to select the optimal number of lags:
 
@@ -41,9 +41,9 @@ The optimal lag for our CPI data is 1.
 ### Applications of Distributed Lag Models
 Distributed lag models are useful in various fields:
 
-- **Economics:** Modeling the impact of monetary policy changes on inflation and unemployment.
-- **Marketing:** Understanding how advertising campaigns affect future sales.
-- **Energy Demand Forecasting:** Estimating the delayed impact of temperature changes on electricity consumption.
-- **Public Policy:** Measuring how tax changes influence consumer spending over time.
+- Economics: Modeling the impact of monetary policy changes on inflation and unemployment.
+- Marketing: Understanding how advertising campaigns affect future sales.
+- Energy Demand Forecasting: Estimating the delayed impact of temperature changes on electricity consumption.
+- Public Policy: Measuring how tax changes influence consumer spending over time.
 
 Distributed lag models are a framework to see how past values of an independent variable influence present outcomes. This gives us insights into delayed relationships and improve forecasting accuracy.
