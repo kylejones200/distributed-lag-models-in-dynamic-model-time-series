@@ -8,6 +8,7 @@ from pandas_datareader import data as web
 from PIL import Image
 from statsmodels.tsa.seasonal import seasonal_decompose
 from visualization import plot_time_series, plot_decomposition
+import signalplot
 import logging
 import matplotlib.animation as animation
 import matplotlib.dates as mdates
@@ -70,16 +71,7 @@ def set_visualization_style():
     """
     Set global matplotlib visualization style parameters.
     """
-    plt.rcParams.update({
-        "font.family": "serif",
-        "axes.labelsize": 12,
-        "axes.titlesize": 14,
-        "axes.spines.top": False,
-        "axes.spines.right": False,
-        "axes.spines.left": True,
-        "axes.spines.bottom": True,
-        "axes.grid": False
-    })
+    signalplot.apply(font_family='serif')
 
 
 def set_plot_style(ax, data: pd.DataFrame, time_column, value_columns):
