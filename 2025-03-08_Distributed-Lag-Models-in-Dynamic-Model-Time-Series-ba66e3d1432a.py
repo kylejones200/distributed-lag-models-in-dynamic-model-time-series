@@ -1,22 +1,22 @@
 # Description: Short example for Distributed Lag Models in Dynamic Model Time Series.
 
 
-
-from datetime import datetime
-from matplotlib.ticker import FuncFormatter
-from pandas_datareader import data as web
-from PIL import Image
-from statsmodels.tsa.seasonal import seasonal_decompose
-from visualization import plot_time_series, plot_decomposition
-import signalplot
 import logging
+from datetime import datetime
+
 import matplotlib.animation as animation
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import signalplot
 import statsmodels.api as sm
 import statsmodels.tsa.stattools as ts
+from matplotlib.ticker import FuncFormatter
+from pandas_datareader import data as web
+from PIL import Image
+from statsmodels.tsa.seasonal import seasonal_decompose
+from visualization import plot_decomposition, plot_time_series
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -25,22 +25,22 @@ logging.basicConfig(
 )
 
 
-
 # Function to fetch CPI data from FRED
 def get_fred_data(series_id, start_date="2000-01-01", end_date=None):
     if end_date is None:
         end_date = datetime.now().strftime("%Y-%m-%d")
-    df = web.DataReader(series_id, 'fred', start_date, end_date)
+    df = web.DataReader(series_id, "fred", start_date, end_date)
     return df.dropna()
+
 
 # Fetch CPI data
 series_id = "CPIAUCSL"  # Consumer Price Index for All Urban Consumers
 cpi_data = get_fred_data(series_id)
-cpi_data = cpi_data.pct_change().dropna()  
+cpi_data = cpi_data.pct_change().dropna()
 
 # Prepare DataFrame
 cpi_data = cpi_data.rename(columns={series_id: "CPI"})
-cpi_data["Date"] = cpi_data.index  
+cpi_data["Date"] = cpi_data.index
 
 
 # Create lagged CPI values
@@ -66,12 +66,11 @@ optimal_lag = np.argmin(aic_values) + 1
 logger.info(f"Optimal number of lags: {optimal_lag}")
 
 
-
 def set_visualization_style():
     """
     Set global matplotlib visualization style parameters.
     """
-    signalplot.apply(font_family='serif')
+    signalplot.apply(font_family="serif")
 
 
 def set_plot_style(ax, data: pd.DataFrame, time_column, value_columns):
@@ -95,26 +94,22 @@ def set_plot_style(ax, data: pd.DataFrame, time_column, value_columns):
     # Adjust X-Axis ticks dynamically
     if time_range < pd.Timedelta(days=365):  # If data is shorter than 1 year
         ax.xaxis.set_major_locator(mdates.MonthLocator(interval=1))
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
     elif time_range < pd.Timedelta(days=365 * 10):  # If data spans less than 10 years
         ax.xaxis.set_major_locator(mdates.YearLocator(1))
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
     else:  # For longer datasets, use 50-year intervals
         ax.xaxis.set_major_locator(mdates.YearLocator(50))
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
 
     ax.set_xlim(data[time_column].min(), data[time_column].max())
 
     # Y-Axis scaling based on percentiles
-    all_values = np.concatenate(
-        [data[col].dropna().values for col in value_columns]
-    )
+    all_values = np.concatenate([data[col].dropna().values for col in value_columns])
     y_20, y_mean, y_80 = np.percentile(all_values, [20, 50, 80])
 
     ax.set_yticks([y_20, y_mean, y_80])
-    ax.set_yticklabels(
-        [f"{int(y_20)}", f"{int(y_mean)}", f"{int(y_80)}"]
-    )  
+    ax.set_yticklabels([f"{int(y_20)}", f"{int(y_mean)}", f"{int(y_80)}"])
 
     ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x)}"))
 
@@ -122,7 +117,14 @@ def set_plot_style(ax, data: pd.DataFrame, time_column, value_columns):
         ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x)}"))
 
 
-def plot_time_series(data: pd.DataFrame, time_column, value_columns, title: str = "Time Series Plot", filename=None, plot: bool = False):
+def plot_time_series(
+    data: pd.DataFrame,
+    time_column,
+    value_columns,
+    title: str = "Time Series Plot",
+    filename=None,
+    plot: bool = False,
+):
     """
     Plot time series data from a DataFrame.
 
@@ -144,8 +146,14 @@ def plot_time_series(data: pd.DataFrame, time_column, value_columns, title: str 
             ax.plot(data[time_column], data[col], linewidth=2, color=colors[i])
             last_x = data[time_column].iloc[-1] + pd.Timedelta(days=10)
             last_y = data[col].iloc[-1]
-            ax.text(last_x, last_y, col, fontsize=12, color=colors[i],
-                    verticalalignment="center")
+            ax.text(
+                last_x,
+                last_y,
+                col,
+                fontsize=12,
+                color=colors[i],
+                verticalalignment="center",
+            )
 
         set_plot_style(ax, data, time_column, value_columns)
 
@@ -157,8 +165,9 @@ def plot_time_series(data: pd.DataFrame, time_column, value_columns, title: str 
         plt.show()
 
 
-def plot_decomposition(data: pd.Series, model: str = "additive",
-                       title: str = "Time Series Decomposition"):
+def plot_decomposition(
+    data: pd.Series, model: str = "additive", title: str = "Time Series Decomposition"
+):
     """
     Perform and plot seasonal decomposition of a time series.
 
@@ -173,16 +182,16 @@ def plot_decomposition(data: pd.Series, model: str = "additive",
     if plot:
         fig, axes = plt.subplots(4, 1, figsize=(10, 8), sharex=True)
 
-        axes[0].plot(data, label="Original", color='black')
+        axes[0].plot(data, label="Original", color="black")
         axes[0].set_title("Original Series")
 
-        axes[1].plot(decomposition.trend, label="Trend", color='black')
+        axes[1].plot(decomposition.trend, label="Trend", color="black")
         axes[1].set_title("Trend")
 
-        axes[2].plot(decomposition.seasonal, label="Seasonal", color='black')
+        axes[2].plot(decomposition.seasonal, label="Seasonal", color="black")
         axes[2].set_title("Seasonal")
 
-        axes[3].plot(decomposition.resid, label="Residual", color='black')
+        axes[3].plot(decomposition.resid, label="Residual", color="black")
         axes[3].set_title("Residual")
 
         plt.tight_layout()
