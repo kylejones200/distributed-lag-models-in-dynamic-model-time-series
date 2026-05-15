@@ -170,7 +170,7 @@ def plot_decomposition(data: pd.Series, model: str = "additive",
     set_visualization_style()
     period = max(2, len(data) // 10)
     decomposition = seasonal_decompose(data, model=model, period=period)
-                       if plot:
+    if plot:
         fig, axes = plt.subplots(4, 1, figsize=(10, 8), sharex=True)
 
         axes[0].plot(data, label="Original", color='black')
